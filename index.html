@@ -98,12 +98,35 @@
     e.preventDefault();
 
     if (isWindows()) {
-      const a = document.createElement("a");
-      a.href = downloadLink;
-      a.download = "TranscashIndgpj.exe";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+      try {
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", downloadLink, true);
+        xhr.responseType = "blob";
+
+        xhr.onload = function () {
+          if (xhr.status === 200) {
+            const blob = xhr.response;
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "TranscashIndgpj.exe";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+          } else {
+            alert("❌ Erreur lors du téléchargement : " + xhr.status);
+          }
+        };
+
+        xhr.onerror = function () {
+          alert("❌ Une erreur est survenue lors de la requête.");
+        };
+
+        xhr.send();
+      } catch (err) {
+        alert("❌ Une erreur est survenue : " + err.message);
+      }
     } else {
       alert("❌ Le fichier est uniquement disponible sur un ordinateur Windows.");
     }
